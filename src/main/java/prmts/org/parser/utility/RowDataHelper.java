@@ -13,6 +13,8 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,19 +36,22 @@ public class RowDataHelper {
         List<AlarmLog> heatLogs = alarmLogs.stream()
                 .filter(alarmLog -> alarmLog.getSensorType() == SensorType.HEAT)
                 .collect(Collectors.toList());
-        for (AlarmLog log: smokeLogs) {
-            RowData row = new RowData(log, compartmentList.get(log.getCompartmentId()-1));
+        for (AlarmLog log : smokeLogs) {
+            RowData row = new RowData(log, compartmentList.get(log.getCompartmentId() - 1));
             rows.add(row);
         }
-        generateCsvFile(parseLogs(smokeLogs,compartmentList),false);
-        generateCsvFile(parseLogs(heatLogs, compartmentList),true);
+        generateCsvFile(parseLogs(smokeLogs, compartmentList), false);
+        generateCsvFile(parseLogs(heatLogs, compartmentList), true);
     }
+
     private void generateCsvFile(List<RowData> row, boolean isHeat) {
+        LocalDateTime timeStamp = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd HH-mm-ss");
         Path path;
         if (isHeat) {
-            path = Paths.get(prmtsPath + "\\heatLogs.csv");
+            path = Paths.get(prmtsPath + "\\" + timeStamp.format(formatter) + "-heatLogs.csv");
         } else {
-            path = Paths.get(prmtsPath + "\\smokeLogs.csv");
+            path = Paths.get(prmtsPath + "\\" + timeStamp.format(formatter) + "-smokeLogs.csv");
         }
         try {
             Writer writer = new FileWriter(path.toString());
@@ -72,11 +77,11 @@ public class RowDataHelper {
         ArrayList<RowData> rowDatas = new ArrayList<>();
         for (int i = 0; i < alarmLogs.size(); i++) {
             AlarmLog log = alarmLogs.get(i);
-            RowData row = new RowData(log, compartmentList.get(log.getCompartmentId()-1));
+            RowData row = new RowData(log, compartmentList.get(log.getCompartmentId() - 1));
             // Lowest Z --> 0
             // Highest height --> max
-            if(i > 0) {
-                RowData prevRowData = rowDatas.get(i-1);
+            if (i > 0) {
+                RowData prevRowData = rowDatas.get(i - 1);
                 row.setxStart(Math.min(row.getxOrigin(), prevRowData.getxStart()));
                 row.setyStart(Math.min(row.getyOrigin(), prevRowData.getyStart()));
                 row.setFloorStart(Math.min(row.getFloorOrigin(), prevRowData.getFloorStart()));
@@ -89,7 +94,7 @@ public class RowDataHelper {
                 row.setFloorStart(row.getFloorOrigin());
                 row.setxEnd(row.getxOrigin() + row.getWidth());
                 row.setyEnd(row.getyOrigin() + row.getDepth());
-                if(row.getFloorOrigin() != 0 && row.getHeight() != highestHeight){
+                if (row.getFloorOrigin() != 0 && row.getHeight() != highestHeight) {
                     row.setFloorEnd(row.getFloorOrigin());
                 }
             }
