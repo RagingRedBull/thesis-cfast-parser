@@ -32,9 +32,7 @@ public class LogHelper {
                 } else {
                     log.setSensorType(SensorType.HEAT);
                 }
-//                log.setSensorId((split[2] + " " + split[3]).replace("(", "")
-//                        .replace(")", ""));
-                log.setSeconds(split[7] + split[8]);
+                log.setSeconds(Integer.parseInt(split[7]));
                 log.setCompartmentId(Integer.parseInt(split[11]));
                 logs.add(log);
             }

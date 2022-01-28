@@ -4,7 +4,7 @@ import com.opencsv.bean.CsvIgnore;
 
 public class AlarmLog {
     private SensorType sensorType;
-    private String seconds;
+    private int seconds;
     private int compartmentId;
 
     public SensorType getSensorType() {
@@ -15,11 +15,11 @@ public class AlarmLog {
         this.sensorType = sensorType;
     }
 
-    public String getSeconds() {
+    public int getSeconds() {
         return seconds;
     }
 
-    public void setSeconds(String seconds) {
+    public void setSeconds(int seconds) {
         this.seconds = seconds;
     }
 

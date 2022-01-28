@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class RowDataHelper {
@@ -37,13 +38,16 @@ public class RowDataHelper {
             RowData row = new RowData(log, compartmentList.get(log.getCompartmentId()-1));
             rows.add(row);
         }
-
-        generateSmokeLogsCSV(rows);
-//        generateHeatLogsCSV(heatLogs);
+        generateCsvFile(parseLogs(smokeLogs,compartmentList),false);
+        generateCsvFile(parseLogs(heatLogs, compartmentList),true);
     }
-
-    private void generateSmokeLogsCSV(List<RowData> row) {
-        Path path = Paths.get(prmtsPath + "\\smokeLogs.csv");
+    private void generateCsvFile(List<RowData> row, boolean isHeat) {
+        Path path;
+        if (isHeat) {
+            path = Paths.get(prmtsPath + "\\heatLogs.csv");
+        } else {
+            path = Paths.get(prmtsPath + "\\smokeLogs.csv");
+        }
         try {
             Writer writer = new FileWriter(path.toString());
             StatefulBeanToCsv sbc = new StatefulBeanToCsvBuilder(writer)
@@ -56,5 +60,41 @@ public class RowDataHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private List<RowData> parseLogs(List<AlarmLog> alarmLogs, List<Compartment> compartmentList) {
+        int highestHeight = compartmentList.stream()
+                .map(Compartment::getHeight)
+                .mapToInt(i -> i)
+                .max()
+                .orElseThrow(NoSuchElementException::new);
+        System.out.println(highestHeight);
+        ArrayList<RowData> rowDatas = new ArrayList<>();
+        for (int i = 0; i < alarmLogs.size(); i++) {
+            AlarmLog log = alarmLogs.get(i);
+            RowData row = new RowData(log, compartmentList.get(log.getCompartmentId()-1));
+            // Lowest Z --> 0
+            // Highest height --> max
+            if(i > 0) {
+                RowData prevRowData = rowDatas.get(i-1);
+                row.setxStart(Math.min(row.getxOrigin(), prevRowData.getxStart()));
+                row.setyStart(Math.min(row.getyOrigin(), prevRowData.getyStart()));
+                row.setFloorStart(Math.min(row.getFloorOrigin(), prevRowData.getFloorStart()));
+                row.setxEnd(Math.max(row.getxOrigin() + row.getWidth(), prevRowData.getxEnd()));
+                row.setyEnd(Math.max(row.getyOrigin() + row.getDepth(), prevRowData.getyEnd()));
+                row.setFloorEnd(Math.max(row.getFloorOrigin(), prevRowData.getFloorEnd()));
+            } else {
+                row.setxStart(row.getxOrigin());
+                row.setyStart(row.getyOrigin());
+                row.setFloorStart(row.getFloorOrigin());
+                row.setxEnd(row.getxOrigin() + row.getWidth());
+                row.setyEnd(row.getyOrigin() + row.getDepth());
+                if(row.getFloorOrigin() != 0 && row.getHeight() != highestHeight){
+                    row.setFloorEnd(row.getFloorOrigin());
+                }
+            }
+            rowDatas.add(row);
+        }
+        return rowDatas;
     }
 }
