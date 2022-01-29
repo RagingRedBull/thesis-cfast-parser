@@ -15,7 +15,7 @@ public class Main {
         LogHelper logHelper = new LogHelper();
         CompartmentHelper compartmentHelper = new CompartmentHelper();
         RowDataHelper rowDataHelper = new RowDataHelper();
-        System.out.println("I EXCUTED PARALLEL");
+        System.out.println("I EXCUTED PARALLEL V@");
         try {
             logs = logHelper.readFile(args[0]);
             compartments = compartmentHelper.parseCompartmentList(compartmentHelper.readFile(args[1]));
