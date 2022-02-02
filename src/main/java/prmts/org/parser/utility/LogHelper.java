@@ -24,6 +24,9 @@ public class LogHelper {
         Path path = Paths.get(fileLocation);
         BufferedReader reader = Files.newBufferedReader(path);
         while ((line = reader.readLine()) != null && !line.contains("Total execution time")) {
+            if(line.equals("\n")) {
+                continue;
+            }
             if (line.contains("Alarm")) {
                 String[] split = line.split(" ");
                 AlarmLog log = new AlarmLog();
