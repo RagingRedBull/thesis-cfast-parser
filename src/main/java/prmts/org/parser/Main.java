@@ -15,13 +15,12 @@ public class Main {
         LogHelper logHelper = new LogHelper();
         CompartmentHelper compartmentHelper = new CompartmentHelper();
         RowDataHelper rowDataHelper = new RowDataHelper();
-        System.out.println("I EXCUTED PARALLEL");
         try {
             logs = logHelper.readFile(args[0]);
             compartments = compartmentHelper.parseCompartmentList(compartmentHelper.readFile(args[1]));
             rowDataHelper.generateCSV(logs,compartments);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.getLocalizedMessage());
         }
     }
 }

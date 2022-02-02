@@ -28,7 +28,7 @@ public class RowDataHelper {
         try {
             Files.createDirectories(prmtsPath);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.getLocalizedMessage());
         }
         List<AlarmLog> smokeLogs = alarmLogs.stream()
                 .filter(alarmLog -> alarmLog.getSensorType() == SensorType.SMOKE)
@@ -63,7 +63,7 @@ public class RowDataHelper {
             sbc.write(row);
             writer.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getLocalizedMessage());
         }
     }
 
