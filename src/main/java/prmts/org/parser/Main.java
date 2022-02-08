@@ -21,6 +21,7 @@ public class Main {
             rowDataHelper.generateCSV(logs,compartments);
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
+            e.printStackTrace();
         }
     }
 }

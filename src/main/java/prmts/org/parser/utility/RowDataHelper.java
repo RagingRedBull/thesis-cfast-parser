@@ -88,6 +88,9 @@ public class RowDataHelper {
                 row.setxEnd(Math.max(row.getxOrigin() + row.getWidth(), prevRowData.getxEnd()));
                 row.setyEnd(Math.max(row.getyOrigin() + row.getDepth(), prevRowData.getyEnd()));
                 row.setFloorEnd(Math.max(row.getFloorOrigin(), prevRowData.getFloorEnd()));
+                row.setxOrigin(prevRowData.getxOrigin());
+                row.setyOrigin(prevRowData.getyOrigin());
+                row.setFloorOrigin(prevRowData.getFloorOrigin());
             } else {
                 row.setxStart(row.getxOrigin());
                 row.setyStart(row.getyOrigin());
