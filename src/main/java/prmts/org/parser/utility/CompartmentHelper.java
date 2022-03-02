@@ -43,7 +43,7 @@ public class CompartmentHelper {
         List<Compartment> compartmentList = new ArrayList<>();
         for (String line: compartmentsToParseList) {
             Compartment compartment = new Compartment();
-            String[] dimensions = line.substring(22,53).split(" ");
+            String[] dimensions = line.substring(22,54).split(" ");
             compartment.setDepth(Integer.parseInt(dimensions[2]));
             compartment.setHeight(Integer.parseInt(dimensions[5]));
             compartment.setWidth(Integer.parseInt(dimensions[8]));
